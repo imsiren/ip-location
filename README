@@ -1,0 +1,45 @@
+## IP识别服务
+
+目前lua层不支持gRPC,所以暂时采用HTTP方式
+
+** /lbs?ip=xxx : 获取IP
+
+** /status : 服务状态计数
+
+## 依赖 
+
+### ip解析lib库
+
+go get https://github.com/ipipdotnet/datx-go
+
+### 文件监听
+
+go get https://github.com/fsnotify/fsnotify
+
+
+### 每天定时执行脚本，lbs服务会自动检测ip库，如果有变更自动更新服务
+
+downipdat.py
+## TODO 
+
+### 增加数据信息
+### 完善文件监听重新加载数据
+### 增加moniter
+### citycode.txt是城市码扩展数据，需要将它合并到ipdatx上，现有模式是通过map查找的方式，会损失一些性能，日后用script/reparseip.py脚本将ipdatx和citycode的数据进行清理合并，以提高查找效率
+
+
+## 压测
+./wrk --latency -c 100 -t8 -d 30 http://192.168.134.66:8088/lbs?ip=181.23.21.22
+Running 30s test @ http://192.168.134.66:8088/lbs?ip=181.23.21.22
+  8 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.29ms    5.37ms 130.57ms   97.45%
+    Req/Sec     6.99k     2.47k   17.84k    91.47%
+  Latency Distribution
+     50%    1.73ms
+     75%    2.03ms
+     90%    2.45ms
+     99%   19.66ms
+  1673039 requests in 30.10s, 540.89MB read
+Requests/sec:  49321.24
+Transfer/sec:     17.97MB
